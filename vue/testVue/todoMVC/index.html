@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>vue小练习</title>
+	<script type="text/javascript" src="vue.js"></script>
+	<style type="text/css">
+		*{
+			margin:0;
+			padding:0;
+		}
+		body{
+			background-color: #F5F5F5;
+		}
+		.container{
+			width:550px;
+			height:auto;
+			margin:0 auto;
+		}
+		.header{
+			width:550px;
+		}
+		.header h1{
+			width:100%;
+			text-align: center;
+			font-size:100px;
+			color:#EAD7D7;
+		}
+		.header input{
+			width:470px;
+			height: 50px;
+			font-size: 24px;
+			font-style: italic;
+			display: inline-block;
+			vertical-align: middle;
+			margin-left: -8px;
+		}
+		.header .checkall{
+			width:54px;
+			height: 54px;
+			display: inline-block;
+			vertical-align: middle;
+		}
+		.data ul{
+			list-style: none;
+			/*width:550px;
+			height:50px;*/
+		}
+		.data ul li{
+			height:50px;
+			width:530px;
+			line-height: 50px;
+			border:1px solid lightgray;
+		}
+		.data ul li:hover button{
+			display:inline-block;
+		}
+		.check{
+			width:20px;
+			height:20px;
+			margin-left: 20px;
+		}
+		.span1{
+			display: inline-block;
+			width:400px;
+			
+		}
+		.spanhover{
+			display: inline-block;
+			width:400px;
+			text-decoration:line-through;
+			color: lightgray;
+		}
+		.data ul li button{
+			width:30px;
+			height:30px;
+			display: none;
+			/*margin-left: 400px;*/
+		}
+
+		.operation{
+			width:530px;
+			height: 40px;
+			border: 1px solid lightgray;
+			display: none;
+		}
+		.operation>div{
+			display: inline-block;
+			font-size: 14px;
+			text-align: center;
+			line-height: 40px;
+			cursor: pointer;
+		}
+		.count{
+			width:100px;
+		}
+		.states{
+			width:300px;
+		}
+		.red{
+			display: inline-block;
+			width:400px;
+			text-decoration:line-through;
+			color: lightgray;
+		}
+	</style>
+</head>
+<body>
+	<div class="container" id="box">
+		<div class="header" id="header">
+			<h1>todos</h1>
+			<div class="add">
+				<input type="checkbox" class="checkall"  v-on:click="checkedAll" checked="{{checkall}}" v-model="checkall">
+				<input v-model="newTodo" v-on:keyup.enter="addTodo" placeholder="What needs to be done?">
+			</div>
+			
+		</div>
+		<div id="data" class="data">
+			<ul>
+				<li v-for="todo in todos" id="liData" v-show="todos[$index].show"> 
+					<input type="checkbox" class="check"  v-model='todos[$index].nchecked' v-on:change="check($index)">
+					<span class="span1" v-bind:class="{'red':todos[$index].nchecked}">{{todo.text}}</span>
+					<button v-on:click="removeTodo($index)">X</button>
+				</li>
+			</ul>
+		</div>
+
+		<div class="operation" id="operation">
+			<div class="count">
+				<span v-model="count">{{count}}</span>
+				<span>items left</span>
+			</div>
+
+			<div class="states">
+				<span v-on:click="showAll">all</span>
+				<span v-on:click="showActive">active</span>
+				<span v-on:click="showComplete">complete</span>
+			</div>
+
+			<div class="complete" id="complete" v-on:click="clearComplete">
+				clear complete
+			</div>
+		</div>
+	</div>
+
+
+	<script type="text/javascript">
+		if(window.localStorage){
+			var storage=window.localStorage;
+		}
+		var value;
+		var operation=document.getElementById("operation");
+		var vm=new Vue({
+			el:"#box",
+			data:{
+				newTodo:'',
+				todos:[
+				],
+				checkall:false,
+				count:0,
+				num:0
+			},
+			methods:{
+				addTodo:function(){
+					var text=this.newTodo.trim();
+					if(text){
+						this.todos.push({text:text,nchecked:false,show:true});
+						storage.setItem("value",JSON.stringify(this.todos));
+						this.newTodo='';
+						showOperate();
+						vm.count=vm.todos.length;
+					}
+					this.check();
+				},
+				removeTodo:function(index){
+					this.todos.splice(index,1);
+					storage.setItem("value",JSON.stringify(this.todos));
+					storage.getItem("value");
+					showOperate();
+					vm.count=vm.todos.length;
+				},
+				check:function(index){
+					// if(this.todos[index].nchecked){
+					// 	this.todos[index].nchecked=false;
+					// }else{
+					// 	this.todos[index].nchecked=true;					}
+					//console.log(this.todos[index].nchecked);
+					// clearComplete();
+						for(var i=0;i<this.todos.length;i++){
+							if(this.todos[i].nchecked==true){
+								this.num=this.num+1;
+							}
+						}
+						if(this.num<this.count){
+							this.checkall=false;
+						}else if(this.num=this.count){
+							this.checkall=true;
+						}
+						//console.log(this.checkall);
+						this.num=0;
+					
+					
+				},
+				checkedAll:function(){
+					//console.log('before'+this.checkall);
+					if(this.checkall){	
+						this.checkall=false;	
+						//console.log(this.checkall);
+						for(var i=0;i<this.todos.length;i++){
+							this.todos[i].nchecked=false;
+							//console.log(this.todos[i].nchecked);
+						}	
+						//console.log('after'+this.checkall);
+					}else{	
+						this.checkall=true;
+						//console.log(this.checkall);
+						for(var i=0;i<this.todos.length;i++){
+							this.todos[i].nchecked=true;
+						}
+
+
+					}
+				},
+				showAll:function(){
+					for(var i=0;i<this.todos.length;i++){
+						this.todos[i].show=true;
+					}
+				},
+				showActive:function(){
+					for(var i=0;i<this.todos.length;i++){
+						if(this.todos[i].nchecked==true){
+							this.todos[i].show=false;
+						}else{
+							this.todos[i].show=true;
+						}
+					}
+				},
+				showComplete:function(){
+					for(var i=0;i<this.todos.length;i++){
+						if(this.todos[i].nchecked==true){
+							this.todos[i].show=true;
+				
+						}else{
+							this.todos[i].show=false;
+						}
+					}
+				},
+				clearComplete:function(){
+					for(var i=this.todos.length-1;i>=0;i--){
+						if(this.todos[i].nchecked==true){
+							this.todos.splice(i,1);
+							storage.setItem("value",JSON.stringify(this.todos));
+							storage.getItem("value");
+						}
+					}
+					this.count=this.todos.length;
+				}
+			}
+		})
+
+		window.onload=function(){
+			showOperate();
+			if(storage!=null){
+				var storagedata=storage.getItem("value");
+				//console.log(typeof storagedata);
+				var storageArray=JSON.parse(storagedata.split(","));
+				//alert(typeof storageArray);
+				for(var i=0;i<storageArray.length;i++){
+					//alert(storageArray[i].text);
+					vm.todos.push({text:storageArray[i].text,nchecked:storageArray[i].nchecked,show:storageArray[i].show});
+					vm.addTodo();
+					vm.count=vm.todos.length;
+				}
+			}
+		}
+
+		// var ulObj=document.getElementsByTagName("ul");
+		// var liObj=ulObj[0].childNodes;
+
+		// function liState(){
+		// 	console.log(liObj);
+		// 	for(var i=0;i<liObj.length;i++){
+		// 		console.log(111);
+		// 		if(liObj.firstChild.subling.style.checked="checked"){
+		// 			hasArray.push(liObj[i]);
+		// 			liObj[i].liState1=true;
+		// 		}else{
+		// 			notArray.push(liObj[i]);
+		// 			liObj[i].liState1=false;
+		// 		}
+
+		// 		console.log(liObj[i].liState);
+		// 	}
+		
+		// }
+
+		//显示操作栏
+		function showOperate(){
+			if(JSON.parse(storage.getItem("value").split(",")).length>0){
+				operation.style.display="block";
+			}else{
+				operation.style.display="none";
+			}
+		}
+		
+	
+	</script>
+
+
+</body>
+</html>

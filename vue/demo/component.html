@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>组件的运用</title>
+	<script type="text/javascript" src="vue.js"></script>
+</head>
+<body>
+	<!-- 全局注册 -->
+	<div id="example">
+		<my-component></my-component>
+	</div>
+
+	<!-- 局部注册 -->
+
+
+	<script type="text/javascript">
+		//定义构造器
+		var Child=Vue.extend({
+			template:'<div>A custom componentChild</div>'
+		})
+
+		var myComponent=Vue.extend({
+			template:'<div> A custom component!<my-component1></my-component1></div>',
+			//局部注册
+			components:{
+				'my-component1':Child
+			}
+		})
+		//全局注册
+		Vue.component('my-component',myComponent);
+
+		//简单写法,在一个步骤中扩展注册
+
+		//创建根实例
+		new Vue({
+			el:'#example'
+		})
+
+
+		//哪一块来实现什么功能？？？
+		
+		
+	</script>
+</body>
+</html>

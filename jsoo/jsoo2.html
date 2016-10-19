@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>js面向对象应用以及继承，重写方法</title>
+	<script type="text/javascript" src="jquery-3.1.0.js"></script>
+	
+	<script type="text/javascript" src="jsoo2.extend.js"></script>
+	<script type="text/javascript" src="jsoo2.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$("ul li div").each(function(){
+				new PlaceAreaEditor($(this).attr("id"),"请留言...",$(this));
+			});
+		});
+	</script>
+
+
+	<style type="text/css">
+		body{
+			font-size: 12px;
+			color:#333;
+		}
+
+		ul li{
+			padding:5px 0 8px 0;
+		}
+	</style>
+</head>
+<body>
+	<ul>
+		<li id="1">
+			<h3>我要改剧本，不让~~</h3>
+			<div></div>
+			<!-- <div></div> 这个div是拿来储存数据的-->
+		</li>
+
+		<li id="2">
+			<h3>悬崖上有桥么，有？没有</h3>
+			<div></div>
+			<!-- <div></div> 这个div是拿来储存数据的-->
+		</li>
+
+		<li id="3">
+			<h3>你敢打我的灯，不租~~</h3>
+			<div></div>
+			<!-- <div></div> 这个div是拿来储存数据的-->
+		</li>
+		
+	</ul>
+</body>
+</html>
