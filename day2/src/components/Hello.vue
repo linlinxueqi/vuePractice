@@ -76,9 +76,10 @@
   font-family: Helvetica, Arial, sans-serif;
 }
 
-.modal-header h3 {
+.modal-header {
   margin-top: 0;
   color: #42b983;
+  font-size: 36px;
 }
 
 .modal-body {
